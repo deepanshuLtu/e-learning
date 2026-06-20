@@ -1,35 +1,87 @@
 import { enrollCourse } from "../services/enrollmentApi";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const CourseCard = ({ course }) => {
-    const handleEnroll = async () => {
-      try {
-        await enrollCourse(course._id);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-        alert("Enrolled Successfully");
-      } catch (error) {
-        alert(error.response?.data?.message || "Enrollment Failed");
-      }
-    };
+  const handleEnroll = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      await enrollCourse(course._id);
+      alert("Enrolled Successfully! Check your dashboard.");
+    } catch (error) {
+      alert(error.response?.data?.message || "Enrollment Failed");
+    }
+  };
+
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "1rem",
-        marginBottom: "1rem",
-      }}
-    >
-      <h3>{course.title}</h3>
+    <div className="card">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginBottom: "0.75rem",
+        }}
+      >
+        <h3
+          style={{
+            fontSize: "16px",
+            fontWeight: "500",
+            color: "var(--gray-900)",
+          }}
+        >
+          {course.title}
+        </h3>
 
-      <p>{course.description}</p>
+        <span className="badge badge-teal">{course.category}</span>
+      </div>
 
-      <p>Category: {course.category}</p>
+      <p
+        style={{
+          color: "var(--gray-600)",
+          fontSize: "14px",
+          marginBottom: "1rem",
+        }}
+      >
+        {course.description}
+      </p>
 
-      <p>Difficulty: {course.difficulty}</p>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          marginBottom: "1rem",
+          flexWrap: "wrap",
+        }}
+      >
+        <span className="badge badge-gray">{course.difficulty}</span>
+      </div>
 
-      <p>₹{course.price}</p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: "auto",
+        }}
+      >
+        <span className="price">
+          {course.price === 0 ? "Free" : `₹${course.price}`}
+        </span>
 
-      <button onClick={handleEnroll}>Enroll</button>
+        <button className="btn btn-primary" onClick={handleEnroll}>
+          Enroll Now
+        </button>
+      </div>
     </div>
   );
 };
+
 export default CourseCard;

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import MainLayout from "../layouts/MainLayout";
+import ProtectedRoute from "../components/ProtectedRoute";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
@@ -18,11 +19,36 @@ const AppRoutes = () => {
 
         <Route path="/signup" element={<Signup />} />
 
-        <Route path="/courses" element={<Courses />} />
+        <Route
+          path="/courses"
+          element={
+            <MainLayout>
+              <Courses />
+            </MainLayout>
+          }
+        />
 
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Dashboard />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/admin" element={<Admin />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Admin />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
